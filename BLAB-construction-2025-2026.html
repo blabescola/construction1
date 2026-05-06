@@ -1,0 +1,937 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BLAB Escola — Construction English 2025/2026</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0a0a0a;
+    --bg-card: #161616;
+    --bg-elevated: #1f1f1f;
+    --purple: #a855f7;
+    --purple-light: #c084fc;
+    --purple-dark: #7c3aed;
+    --purple-glow: rgba(168, 85, 247, 0.4);
+    --white: #ffffff;
+    --gray: #a0a0a0;
+    --gray-dark: #2a2a2a;
+    --green: #22c55e;
+    --green-bg: rgba(34, 197, 94, 0.15);
+    --red: #ef4444;
+    --red-bg: rgba(239, 68, 68, 0.15);
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: var(--bg);
+    background-image:
+      radial-gradient(circle at 20% 0%, rgba(168, 85, 247, 0.15) 0%, transparent 50%),
+      radial-gradient(circle at 80% 100%, rgba(124, 58, 237, 0.1) 0%, transparent 50%);
+    min-height: 100vh; padding: 20px; color: var(--white);
+  }
+  .container { max-width: 920px; margin: 0 auto; }
+
+  /* PASSWORD GATE */
+  #password-gate {
+    position: fixed; inset: 0; z-index: 9999;
+    background: var(--bg);
+    background-image:
+      radial-gradient(circle at 20% 0%, rgba(168, 85, 247, 0.18) 0%, transparent 50%),
+      radial-gradient(circle at 80% 100%, rgba(124, 58, 237, 0.12) 0%, transparent 50%);
+    display: flex; align-items: center; justify-content: center; padding: 20px;
+  }
+  #password-gate.hidden { display: none; }
+  .lock-card {
+    background: var(--bg-card); border: 1px solid var(--gray-dark);
+    border-radius: 18px; padding: 40px 32px; max-width: 420px; width: 100%;
+    text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+  }
+  .lock-icon {
+    width: 64px; height: 64px; margin: 0 auto 18px;
+    background: linear-gradient(135deg, var(--purple), var(--purple-dark));
+    border-radius: 18px; display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 8px 24px var(--purple-glow);
+  }
+  .lock-icon svg { width: 32px; height: 32px; fill: var(--white); }
+  .lock-card h2 {
+    font-size: 1.5em; font-weight: 800; margin-bottom: 6px;
+    background: linear-gradient(135deg, var(--white), var(--purple-light));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  }
+  .lock-card p { color: var(--gray); font-size: 0.92em; margin-bottom: 22px; line-height: 1.5; }
+  .lock-input {
+    width: 100%; background: var(--bg-elevated); border: 2px solid var(--gray-dark);
+    color: var(--white); padding: 13px 16px; border-radius: 12px; font-size: 1em;
+    font-family: inherit; text-align: center; letter-spacing: 2px; font-weight: 700;
+    transition: all 0.2s ease; margin-bottom: 12px;
+  }
+  .lock-input:focus { outline: none; border-color: var(--purple); box-shadow: 0 0 0 3px var(--purple-glow); }
+  .lock-input.error { border-color: var(--red); animation: shake 0.4s; }
+  .lock-btn {
+    width: 100%; background: linear-gradient(135deg, var(--purple), var(--purple-dark));
+    color: var(--white); border: none; padding: 13px; border-radius: 12px;
+    font-size: 0.95em; font-weight: 700; cursor: pointer; font-family: inherit;
+    box-shadow: 0 4px 14px var(--purple-glow); transition: all 0.2s ease;
+  }
+  .lock-btn:hover { transform: translateY(-2px); }
+  .lock-error { color: var(--red); font-size: 0.85em; margin-bottom: 12px; min-height: 18px; font-weight: 600; }
+
+  /* DOWNLOAD BUTTON */
+  .download-row {
+    display: flex; justify-content: center; margin-top: 16px;
+  }
+  .download-btn {
+    display: inline-flex; align-items: center; gap: 10px;
+    background: var(--bg-elevated); border: 1px solid var(--purple);
+    color: var(--purple-light); padding: 10px 18px; border-radius: 12px;
+    font-size: 0.88em; font-weight: 700; text-decoration: none;
+    transition: all 0.2s ease; font-family: inherit; cursor: pointer;
+  }
+  .download-btn:hover {
+    background: linear-gradient(135deg, var(--purple), var(--purple-dark));
+    color: var(--white); box-shadow: 0 4px 14px var(--purple-glow);
+    transform: translateY(-2px);
+  }
+  .download-btn svg { width: 18px; height: 18px; fill: currentColor; }
+
+  /* HEADER */
+  header { text-align: center; margin-bottom: 30px; }
+  .logo { display: inline-flex; align-items: center; gap: 12px; margin-bottom: 14px; }
+  .logo-icon {
+    width: 48px; height: 48px;
+    background: linear-gradient(135deg, var(--purple), var(--purple-dark));
+    border-radius: 14px; display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 8px 24px var(--purple-glow);
+  }
+  .logo-icon svg { width: 28px; height: 28px; fill: var(--white); }
+  .logo-text { font-size: 1.6em; font-weight: 800; letter-spacing: -0.5px; color: var(--white); }
+  .logo-text .accent { color: var(--purple-light); }
+  .logo-subtitle { font-size: 0.7em; color: var(--gray); text-transform: uppercase; letter-spacing: 2px; font-weight: 500; margin-top: 2px; }
+  header h1 {
+    font-size: 1.8em; font-weight: 700; margin-top: 14px; margin-bottom: 6px;
+    background: linear-gradient(135deg, var(--white), var(--purple-light));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  }
+  header .subtitle { font-size: 0.95em; color: var(--gray); font-weight: 400; }
+  header .level-badge {
+    display: inline-block; background: var(--bg-elevated); border: 1px solid var(--purple);
+    color: var(--purple-light); padding: 4px 14px; border-radius: 20px; font-size: 0.8em;
+    margin-top: 12px; font-weight: 600; letter-spacing: 0.5px;
+  }
+
+  /* TABS */
+  .tab-group {
+    background: var(--bg-card); border: 1px solid var(--gray-dark);
+    padding: 6px; border-radius: 14px; margin-bottom: 14px;
+    display: flex; gap: 6px; flex-wrap: wrap;
+  }
+  .tab {
+    flex: 1; min-width: 80px; padding: 11px 10px; background: transparent; border: none;
+    color: var(--gray); font-size: 0.92em; font-weight: 700; cursor: pointer;
+    border-radius: 9px; transition: all 0.25s ease; font-family: inherit;
+  }
+  .tab:hover:not(.active) { color: var(--white); background: var(--gray-dark); }
+  .tab.active {
+    background: linear-gradient(135deg, var(--purple), var(--purple-dark));
+    color: var(--white); box-shadow: 0 4px 14px var(--purple-glow);
+  }
+  .mode-tabs .tab.active {
+    background: var(--bg-elevated); color: var(--purple-light);
+    border: 1px solid var(--purple); box-shadow: none;
+  }
+
+  /* PANEL */
+  .panel {
+    background: var(--bg-card); border: 1px solid var(--gray-dark);
+    border-radius: 18px; padding: 28px; margin-top: 18px;
+  }
+
+  .level-intro {
+    background: var(--bg-elevated); padding: 14px 18px; border-radius: 12px;
+    color: var(--gray); font-size: 0.9em; margin-bottom: 22px;
+    border-left: 3px solid var(--purple); line-height: 1.55;
+  }
+  .level-intro strong { color: var(--purple-light); }
+  .level-intro .level-tag {
+    display: inline-block; background: var(--purple-dark); color: var(--white);
+    padding: 2px 10px; border-radius: 12px; font-size: 0.78em;
+    margin-right: 8px; font-weight: 700; letter-spacing: 0.5px;
+  }
+
+  /* SCOREBOARD */
+  .scoreboard { display: flex; gap: 12px; margin-bottom: 22px; flex-wrap: wrap; }
+  .score-card { flex: 1; min-width: 110px; background: var(--bg-elevated); border: 1px solid var(--gray-dark); padding: 14px; border-radius: 12px; text-align: center; }
+  .score-card .label { font-size: 0.7em; text-transform: uppercase; letter-spacing: 1.5px; color: var(--gray); margin-bottom: 6px; font-weight: 600; }
+  .score-card .value { font-size: 1.6em; font-weight: 800; color: var(--white); }
+  .score-card.correct .value { color: var(--green); }
+  .score-card.wrong .value { color: var(--red); }
+  .score-card.percent .value { color: var(--purple-light); }
+  .reset-btn { background: transparent; border: 1px solid var(--gray-dark); color: var(--gray); padding: 6px 14px; border-radius: 8px; font-size: 0.8em; cursor: pointer; transition: all 0.2s ease; font-family: inherit; font-weight: 500; }
+  .reset-btn:hover { border-color: var(--purple); color: var(--purple-light); }
+
+  /* MODE PANEL */
+  .mode-panel { display: none; }
+  .mode-panel.active { display: block; }
+
+  /* FLASHCARDS */
+  .progress-bar-wrap { background: var(--gray-dark); height: 5px; border-radius: 3px; margin-bottom: 14px; overflow: hidden; }
+  .progress-bar { height: 100%; background: linear-gradient(90deg, var(--purple), var(--purple-light)); transition: width 0.4s ease; border-radius: 3px; box-shadow: 0 0 10px var(--purple-glow); }
+  .card-counter { text-align: center; color: var(--gray); font-size: 0.85em; margin-bottom: 14px; font-weight: 500; letter-spacing: 0.5px; }
+  .flashcard-container { perspective: 1500px; height: 340px; margin-bottom: 20px; }
+  .flashcard { width: 100%; height: 100%; position: relative; transform-style: preserve-3d; transition: transform 0.6s; cursor: pointer; }
+  .flashcard.flipped { transform: rotateY(180deg); }
+  .card-face { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 16px; padding: 30px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; }
+  .card-front { background: linear-gradient(135deg, var(--purple-dark), var(--purple)); color: var(--white); box-shadow: 0 12px 40px var(--purple-glow); }
+  .card-front .term { font-size: 2.4em; font-weight: 800; margin-bottom: 12px; letter-spacing: -1px; line-height: 1.1; }
+  .card-front .pt { font-size: 0.95em; opacity: 0.85; font-style: italic; }
+  .card-front .hint { font-size: 0.78em; opacity: 0.7; font-style: italic; margin-top: 14px; }
+  .card-back { background: var(--bg-elevated); border: 2px solid var(--purple); transform: rotateY(180deg); color: var(--white); }
+  .card-back .label { font-size: 0.7em; text-transform: uppercase; letter-spacing: 2px; color: var(--purple-light); font-weight: 700; margin-bottom: 8px; }
+  .card-back .meaning { font-size: 1.05em; font-weight: 600; line-height: 1.45; margin-bottom: 16px; max-width: 92%; }
+  .card-back .example-label { font-size: 0.65em; text-transform: uppercase; letter-spacing: 2px; color: var(--gray); font-weight: 600; margin-bottom: 6px; }
+  .card-back .example { font-size: 0.92em; font-style: italic; color: var(--gray); line-height: 1.5; max-width: 90%; }
+  .eval-buttons { display: flex; gap: 10px; margin-bottom: 14px; }
+  .eval-btn { flex: 1; padding: 14px; border: 2px solid var(--gray-dark); background: var(--bg-elevated); color: var(--white); border-radius: 12px; font-size: 0.95em; font-weight: 700; cursor: pointer; transition: all 0.2s ease; font-family: inherit; display: flex; align-items: center; justify-content: center; gap: 8px; }
+  .eval-btn .icon { font-size: 1.2em; }
+  .eval-btn.correct:hover { border-color: var(--green); background: var(--green-bg); color: var(--green); transform: translateY(-2px); }
+  .eval-btn.wrong:hover { border-color: var(--red); background: var(--red-bg); color: var(--red); transform: translateY(-2px); }
+  .eval-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none !important; }
+  .nav-controls { display: flex; gap: 10px; }
+  .nav-btn { flex: 1; padding: 11px; background: transparent; border: 1px solid var(--gray-dark); color: var(--gray); border-radius: 10px; font-size: 0.9em; font-weight: 600; cursor: pointer; transition: all 0.2s ease; font-family: inherit; }
+  .nav-btn:hover { border-color: var(--purple); color: var(--purple-light); }
+  .nav-btn.shuffle { background: linear-gradient(135deg, var(--purple), var(--purple-dark)); color: var(--white); border-color: transparent; }
+  .nav-btn.shuffle:hover { box-shadow: 0 4px 16px var(--purple-glow); }
+
+  /* MATCHING */
+  .matching-instructions {
+    background: var(--bg-elevated); padding: 12px 16px; border-radius: 10px;
+    color: var(--gray); font-size: 0.88em; margin-bottom: 18px; border-left: 3px solid var(--purple);
+  }
+  .matching-instructions strong { color: var(--purple-light); }
+  .matching-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+  .column-title { font-size: 0.75em; text-transform: uppercase; letter-spacing: 2px; color: var(--purple-light); font-weight: 700; margin-bottom: 10px; text-align: center; }
+  .match-column { display: flex; flex-direction: column; gap: 8px; }
+  .match-item {
+    background: var(--bg-elevated); border: 2px solid var(--gray-dark); color: var(--white);
+    padding: 12px 14px; border-radius: 10px; cursor: pointer; font-size: 0.9em;
+    transition: all 0.2s ease; line-height: 1.4; text-align: left;
+  }
+  .match-item.term { font-weight: 700; text-align: center; font-size: 1em; }
+  .match-item:hover:not(.matched):not(.selected) { border-color: var(--purple); background: rgba(168, 85, 247, 0.08); }
+  .match-item.selected { border-color: var(--purple); background: linear-gradient(135deg, var(--purple), var(--purple-dark)); color: var(--white); box-shadow: 0 4px 14px var(--purple-glow); }
+  .match-item.matched { background: var(--green-bg); border-color: var(--green); color: var(--green); cursor: default; opacity: 0.6; }
+  .match-item.wrong { background: var(--red-bg); border-color: var(--red); animation: shake 0.4s; }
+  @keyframes shake { 0%,100%{transform:translateX(0);} 25%{transform:translateX(-6px);} 75%{transform:translateX(6px);} }
+
+  .matching-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; flex-wrap: wrap; gap: 10px; }
+  .round-score { background: linear-gradient(135deg, var(--purple), var(--purple-dark)); color: var(--white); padding: 8px 16px; border-radius: 20px; font-weight: 700; font-size: 0.88em; box-shadow: 0 4px 12px var(--purple-glow); }
+  .matching-controls { display: flex; gap: 10px; }
+  .match-mode-toggle { display: flex; gap: 6px; background: var(--bg-elevated); padding: 4px; border-radius: 10px; border: 1px solid var(--gray-dark); margin-bottom: 14px; }
+  .match-mode-toggle button {
+    flex: 1; padding: 8px 12px; background: transparent; border: none; color: var(--gray);
+    font-size: 0.82em; font-weight: 700; cursor: pointer; border-radius: 7px;
+    transition: all 0.2s ease; font-family: inherit;
+  }
+  .match-mode-toggle button.active { background: linear-gradient(135deg, var(--purple), var(--purple-dark)); color: var(--white); }
+
+  /* QUIZ */
+  .quiz-progress { text-align: center; color: var(--gray); font-size: 0.85em; margin-bottom: 14px; font-weight: 500; }
+  .quiz-card {
+    background: var(--bg-elevated); border: 1px solid var(--gray-dark);
+    border-radius: 16px; padding: 24px; margin-bottom: 16px;
+  }
+  .quiz-num { display: inline-block; background: var(--purple-dark); color: var(--white); padding: 3px 10px; border-radius: 10px; font-size: 0.72em; font-weight: 700; margin-bottom: 12px; letter-spacing: 0.5px; }
+  .quiz-prompt { font-size: 1em; line-height: 1.55; margin-bottom: 18px; color: var(--white); }
+  .quiz-prompt em { color: var(--purple-light); font-style: normal; font-weight: 700; }
+  .quiz-prompt .quiz-meaning { display: block; margin-top: 10px; padding: 12px 14px; background: var(--bg-card); border-left: 3px solid var(--purple-light); border-radius: 6px; color: var(--white); font-size: 0.95em; line-height: 1.5; }
+  .quiz-options { display: flex; flex-direction: column; gap: 8px; }
+  .quiz-option {
+    background: var(--bg-card); border: 2px solid var(--gray-dark); color: var(--white);
+    padding: 12px 14px; border-radius: 10px; cursor: pointer; font-size: 0.92em;
+    transition: all 0.2s ease; text-align: left; line-height: 1.4;
+    font-family: inherit; font-weight: 600;
+  }
+  .quiz-option:hover:not(.disabled) { border-color: var(--purple); background: rgba(168, 85, 247, 0.08); }
+  .quiz-option.correct { background: var(--green-bg); border-color: var(--green); color: var(--green); }
+  .quiz-option.wrong { background: var(--red-bg); border-color: var(--red); color: var(--red); }
+  .quiz-option.disabled { cursor: default; }
+  .quiz-letter { display: inline-block; width: 22px; height: 22px; line-height: 22px; text-align: center; background: var(--gray-dark); color: var(--white); border-radius: 50%; font-size: 0.72em; font-weight: 700; margin-right: 10px; }
+  .quiz-feedback {
+    margin-top: 14px; padding: 12px 14px; border-radius: 10px;
+    background: var(--bg-card); font-size: 0.88em; color: var(--gray); line-height: 1.5;
+    border: 1px dashed var(--gray-dark); display: none;
+  }
+  .quiz-feedback.show { display: block; }
+  .quiz-feedback strong { color: var(--purple-light); }
+  .quiz-nav { display: flex; gap: 10px; }
+
+  .victory {
+    display: none; text-align: center; padding: 24px;
+    background: linear-gradient(135deg, var(--purple-dark), var(--purple));
+    color: var(--white); border-radius: 14px; margin-top: 20px; box-shadow: 0 12px 40px var(--purple-glow);
+  }
+  .victory.show { display: block; }
+  .victory h2 { font-size: 1.5em; margin-bottom: 8px; font-weight: 800; }
+  .victory p { font-size: 0.95em; opacity: 0.95; margin-bottom: 14px; }
+  .victory button { background: var(--white); color: var(--purple-dark); padding: 10px 22px; border: none; border-radius: 10px; font-weight: 700; cursor: pointer; font-size: 0.9em; font-family: inherit; }
+
+  @media (max-width: 600px) {
+    header h1 { font-size: 1.4em; }
+    .matching-grid { grid-template-columns: 1fr; }
+    .panel { padding: 20px; }
+    .logo-text { font-size: 1.3em; }
+    .card-front .term { font-size: 1.7em; }
+    .tab { font-size: 0.82em; padding: 9px 6px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ====== PASSWORD GATE ====== -->
+<div id="password-gate">
+  <div class="lock-card">
+    <div class="lock-icon">
+      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/>
+      </svg>
+    </div>
+    <h2>BLAB Escola</h2>
+    <p>Digite a senha para acessar a atividade<br><strong style="color:var(--purple-light);">Construction English</strong></p>
+    <input type="password" class="lock-input" id="lock-input" placeholder="••••••••" autofocus>
+    <div class="lock-error" id="lock-error"></div>
+    <button class="lock-btn" onclick="checkPassword()">Entrar</button>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- HEADER -->
+  <header>
+    <div class="logo">
+      <div class="logo-icon">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM7 9h2v2H7V9zm4 0h2v2h-2V9zm4 0h2v2h-2V9z"/>
+        </svg>
+      </div>
+      <div>
+        <div class="logo-text">BLAB<span class="accent"> Escola</span></div>
+        <div class="logo-subtitle">A Língua do Seu Futuro</div>
+      </div>
+    </div>
+    <h1>Construction English</h1>
+    <div class="subtitle">From the Site to the Blueprint · 2025 / 2026</div>
+    <div class="level-badge">A1 → C2 · 90 Terms · Technical + On-Site</div>
+    <div class="download-row">
+      <a class="download-btn" href="construction-2025-2026-answer-key.pdf" download="BLAB-Construction-Answer-Key-2025-2026.pdf">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/>
+        </svg>
+        Baixar gabarito (PDF)
+      </a>
+    </div>
+  </header>
+
+  <!-- LEVEL TABS -->
+  <div class="tab-group level-tabs">
+    <button class="tab active" data-level="a1" onclick="switchLevel('a1', this)">A1</button>
+    <button class="tab" data-level="a2" onclick="switchLevel('a2', this)">A2</button>
+    <button class="tab" data-level="b1" onclick="switchLevel('b1', this)">B1</button>
+    <button class="tab" data-level="b2" onclick="switchLevel('b2', this)">B2</button>
+    <button class="tab" data-level="c1" onclick="switchLevel('c1', this)">C1</button>
+    <button class="tab" data-level="c2" onclick="switchLevel('c2', this)">C2</button>
+  </div>
+
+  <!-- MODE TABS -->
+  <div class="tab-group mode-tabs">
+    <button class="tab active" data-mode="study" onclick="switchMode('study', this)">Flashcards (Study)</button>
+    <button class="tab" data-mode="match" onclick="switchMode('match', this)">Matching (Practice)</button>
+    <button class="tab" data-mode="quiz" onclick="switchMode('quiz', this)">Quiz (Test)</button>
+  </div>
+
+  <div class="panel">
+
+    <!-- LEVEL INTRO -->
+    <div class="level-intro" id="level-intro"></div>
+
+    <!-- SCOREBOARD -->
+    <div class="scoreboard" id="scoreboard"></div>
+
+    <!-- ============ STUDY (FLASHCARDS) ============ -->
+    <div class="mode-panel active" id="panel-study">
+      <div class="progress-bar-wrap"><div class="progress-bar" id="study-progress"></div></div>
+      <div class="card-counter" id="study-counter">Card 1 of 15</div>
+      <div class="flashcard-container">
+        <div class="flashcard" id="study-card" onclick="flipStudy()">
+          <div class="card-face card-front">
+            <div class="term" id="study-term">—</div>
+            <div class="pt" id="study-pt"></div>
+            <div class="hint">Tap to reveal meaning &amp; example</div>
+          </div>
+          <div class="card-face card-back">
+            <div class="label">Meaning</div>
+            <div class="meaning" id="study-meaning"></div>
+            <div class="example-label">Example</div>
+            <div class="example" id="study-example"></div>
+          </div>
+        </div>
+      </div>
+      <div class="eval-buttons">
+        <button class="eval-btn wrong" id="study-wrong" onclick="markStudy(false)" disabled><span class="icon">✗</span> Got it Wrong</button>
+        <button class="eval-btn correct" id="study-correct" onclick="markStudy(true)" disabled><span class="icon">✓</span> Got it Right</button>
+      </div>
+      <div class="nav-controls">
+        <button class="nav-btn" onclick="prevStudy()">← Previous</button>
+        <button class="nav-btn shuffle" onclick="shuffleStudy()">⇆ Shuffle</button>
+        <button class="nav-btn" onclick="nextStudy()">Next →</button>
+      </div>
+    </div>
+
+    <!-- ============ MATCH ============ -->
+    <div class="mode-panel" id="panel-match">
+      <div class="match-mode-toggle">
+        <button id="match-mode-pt" class="active" onclick="setMatchMode('pt')">EN ↔ Português</button>
+        <button id="match-mode-def" onclick="setMatchMode('def')">EN ↔ Definition</button>
+      </div>
+      <div class="matching-instructions">
+        Click an <strong>English term</strong> on the left, then click its <strong>match</strong> on the right.
+      </div>
+      <div class="matching-header">
+        <div class="round-score">Matched: <span id="match-current">0</span> / <span id="match-total">15</span></div>
+        <button class="reset-btn" onclick="initMatch()">↻ New Round</button>
+      </div>
+      <div class="matching-grid">
+        <div><div class="column-title">English</div><div class="match-column" id="match-left"></div></div>
+        <div><div class="column-title" id="match-right-title">Português</div><div class="match-column" id="match-right"></div></div>
+      </div>
+      <div class="victory" id="match-victory">
+        <h2>You nailed it! 🔨</h2>
+        <p>You matched all of them correctly. Ready for another round?</p>
+        <button onclick="initMatch()">Play Again</button>
+      </div>
+    </div>
+
+    <!-- ============ QUIZ ============ -->
+    <div class="mode-panel" id="panel-quiz">
+      <div class="quiz-progress" id="quiz-progress">Question 1 of 15</div>
+      <div id="quiz-card-container"></div>
+      <div class="quiz-nav">
+        <button class="nav-btn" onclick="prevQuiz()">← Previous</button>
+        <button class="nav-btn shuffle" onclick="shuffleQuiz()">⇆ New Quiz</button>
+        <button class="nav-btn" onclick="nextQuiz()">Next →</button>
+      </div>
+      <div class="victory" id="quiz-victory">
+        <h2>Quiz complete! 🎯</h2>
+        <p id="quiz-victory-msg">—</p>
+        <button onclick="shuffleQuiz()">New Quiz</button>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+<script>
+/* ===================== PASSWORD GATE ===================== */
+const ACCESS_PASSWORD = "BLABESCOLA";
+
+function checkPassword() {
+  const input = document.getElementById('lock-input');
+  const err = document.getElementById('lock-error');
+  const value = (input.value || '').trim().toUpperCase();
+  if (value === ACCESS_PASSWORD) {
+    document.getElementById('password-gate').classList.add('hidden');
+    try { sessionStorage.setItem('blab_access', '1'); } catch (e) {}
+    err.textContent = '';
+  } else {
+    input.classList.add('error');
+    err.textContent = 'Senha incorreta. Tente novamente.';
+    setTimeout(() => input.classList.remove('error'), 500);
+    input.value = '';
+    input.focus();
+  }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  const input = document.getElementById('lock-input');
+  if (input) {
+    input.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') { e.preventDefault(); checkPassword(); }
+    });
+    input.focus();
+  }
+  // remember unlock for the session
+  try {
+    if (sessionStorage.getItem('blab_access') === '1') {
+      document.getElementById('password-gate').classList.add('hidden');
+    }
+  } catch (e) {}
+});
+
+/* ===================== DATA — 90 TERMS, 15 PER LEVEL ===================== */
+/* Each term has: term · pt · meaning · example */
+
+const DATA = {
+  a1: {
+    blurb: "<strong>Basic site vocabulary.</strong> The words every worker hears on day one — start here if you're brand new to construction English.",
+    terms: [
+      { term: "brick",  pt: "tijolo",          meaning: "A small rectangular block of baked clay used to build walls.", example: "The mason needs more bricks to finish this wall." },
+      { term: "wall",   pt: "parede",          meaning: "A vertical structure that divides or surrounds rooms.",       example: "Paint the wall white before the client arrives." },
+      { term: "roof",   pt: "telhado",         meaning: "The top covering of a building.",                              example: "Heavy rain damaged the roof last night." },
+      { term: "floor",  pt: "piso / chão",     meaning: "The flat surface inside a building that you walk on.",         example: "The kitchen floor is made of ceramic tiles." },
+      { term: "door",   pt: "porta",           meaning: "A movable barrier used to enter or leave a room.",             example: "Close the door — the dust is going everywhere." },
+      { term: "window", pt: "janela",          meaning: "An opening in a wall covered with glass.",                     example: "The new window lets in much more light." },
+      { term: "cement", pt: "cimento",         meaning: "A grey powder mixed with water and sand to make concrete.",   example: "We're running out of cement — order another bag." },
+      { term: "sand",   pt: "areia",           meaning: "Small loose grains of stone used in construction.",            example: "Mix three parts sand to one part cement." },
+      { term: "wood",   pt: "madeira",         meaning: "Material that comes from trees, used in many parts of construction.", example: "The frame of the house is made of wood." },
+      { term: "nail",   pt: "prego",           meaning: "A small thin piece of metal hammered to fix things together.", example: "Use longer nails for the roof beams." },
+      { term: "hammer", pt: "martelo",         meaning: "A hand tool used to hit nails or break things.",               example: "Pass me the hammer — this nail is bent." },
+      { term: "paint",  pt: "tinta",           meaning: "A liquid used to cover walls and surfaces with color.",        example: "The paint needs two coats to look right." },
+      { term: "ladder", pt: "escada (de mão)", meaning: "A piece of equipment with steps used to climb up.",            example: "Don't put the ladder on uneven ground." },
+      { term: "helmet", pt: "capacete",        meaning: "Protective head gear worn on the construction site.",          example: "Always wear your helmet inside the site." },
+      { term: "tool",   pt: "ferramenta",      meaning: "Any object used by a worker to do a job.",                     example: "Take care of your tools — they last longer." }
+    ]
+  },
+  a2: {
+    blurb: "<strong>Tools and people on the site.</strong> Now you can <em>describe</em> the site — what each tool does and who uses it.",
+    terms: [
+      { term: "bucket",       pt: "balde",                meaning: "A round container used to carry water, sand or cement.",            example: "Fill the bucket with water and bring it over here." },
+      { term: "shovel",       pt: "pá",                   meaning: "A tool with a long handle used to dig or move sand and dirt.",      example: "Grab a shovel and start moving that pile of sand." },
+      { term: "drill",        pt: "furadeira",            meaning: "An electric tool used to make holes in walls or wood.",             example: "I need the drill to put up the new shelf." },
+      { term: "screw",        pt: "parafuso",             meaning: "A small metal piece you turn into wood or a wall to fix things.", example: "This screw is loose — tighten it up." },
+      { term: "screwdriver",  pt: "chave de fenda",       meaning: "A hand tool used to put screws in or take them out.",               example: "Pass me the small screwdriver, please." },
+      { term: "tile",         pt: "azulejo / cerâmica",   meaning: "A flat, hard square piece used to cover floors, walls or roofs.",   example: "One tile in the bathroom is cracked." },
+      { term: "pipe",         pt: "cano",                 meaning: "A long round tube that carries water or gas inside a building.",    example: "There's a small leak in the water pipe." },
+      { term: "wire",         pt: "fio elétrico",         meaning: "A thin metal line used to carry electricity.",                      example: "Don't touch that wire — it's still live." },
+      { term: "saw",          pt: "serra",                meaning: "A tool with sharp teeth used to cut wood or metal.",                example: "Use the saw to cut the wood at this line." },
+      { term: "brush",        pt: "pincel",               meaning: "A tool with bristles used to apply paint to a surface.",            example: "Clean the brush after every coat of paint." },
+      { term: "glove",        pt: "luva",                 meaning: "A piece of clothing that protects your hands while working.",       example: "Always wear gloves when you handle cement." },
+      { term: "boot",         pt: "bota",                 meaning: "A heavy, strong shoe worn for safety on the construction site.",    example: "Your boots have to cover your ankles on this site." },
+      { term: "site",         pt: "canteiro de obra",     meaning: "The place where a building is being built.",                        example: "The site opens at six every morning." },
+      { term: "worker",       pt: "operário",             meaning: "A person whose job is to build or repair things.",                  example: "Each worker reports to the foreman first." },
+      { term: "cement mixer", pt: "betoneira",            meaning: "A machine that turns to mix cement, sand and water.",               example: "Turn off the cement mixer when you take a break." }
+    ]
+  },
+  b1: {
+    blurb: "<strong>Structural &amp; safety vocabulary.</strong> The words you hear on real residential and commercial sites — from foundation to safety harness.",
+    terms: [
+      { term: "scaffolding",    pt: "andaime",              meaning: "Temporary metal or wooden structure that supports workers and materials at height.", example: "The painters can't reach the upper floors without scaffolding." },
+      { term: "blueprint",      pt: "planta / projeto",     meaning: "A detailed technical drawing showing the design of a building.",                     example: "The architect handed me the blueprint for the second floor." },
+      { term: "foundation",     pt: "fundação",             meaning: "The lowest part of a building that supports the structure.",                          example: "Before any walls go up, we have to pour the foundation." },
+      { term: "beam",           pt: "viga",                 meaning: "A long horizontal piece of wood or steel that supports weight.",                      example: "A heavy steel beam runs across the ceiling." },
+      { term: "column",         pt: "pilar",                meaning: "A vertical structural element that supports the weight above.",                       example: "Each column carries the weight of the entire building." },
+      { term: "concrete",       pt: "concreto",             meaning: "A mixture of cement, sand, gravel and water that hardens into stone.",               example: "The concrete truck arrives at 7 a.m." },
+      { term: "plaster",        pt: "reboco",               meaning: "A paste applied to walls to make them smooth before painting.",                       example: "Once the bricks are in place, we apply plaster." },
+      { term: "plumbing",       pt: "encanamento",          meaning: "The system of pipes that carry water in a building.",                                 example: "Don't close the walls — the plumbing hasn't been inspected." },
+      { term: "wiring",         pt: "fiação elétrica",      meaning: "The system of electric wires inside a building.",                                     example: "Faulty wiring is the most common cause of fires." },
+      { term: "insulation",     pt: "isolamento",           meaning: "Material added to walls or roofs to control temperature or sound.",                  example: "We're adding extra insulation in the roof." },
+      { term: "crane",          pt: "guindaste",            meaning: "A tall machine with a long arm used to lift heavy things.",                            example: "The crane lifts the steel beams up to the seventh floor." },
+      { term: "wheelbarrow",    pt: "carrinho de mão",      meaning: "A small one-wheel cart pushed by hand to move material.",                              example: "Pedro pushes a wheelbarrow full of bricks every morning." },
+      { term: "measuring tape", pt: "trena",                meaning: "A long flexible ruler used to measure distances.",                                    example: "Use the measuring tape to check the door is 80 cm wide." },
+      { term: "level",          pt: "nível (ferramenta)",   meaning: "A tool used to check if a surface is perfectly horizontal or vertical.",              example: "Place the level on the shelf to make sure it's flat." },
+      { term: "safety harness", pt: "cinto de segurança",   meaning: "Protective straps worn to prevent falls when working at height.",                     example: "Anyone working above three meters must wear a safety harness." }
+    ]
+  },
+  b2: {
+    blurb: "<strong>Technical vocab + on-site language.</strong> Mix of structural terms and the kind of phrases shouted across a real <em>jobsite</em>.",
+    terms: [
+      { term: "rebar",            pt: "vergalhão",                meaning: "Steel reinforcement bar placed inside concrete to add tensile strength.", example: "The rebar has to be tied up before the concrete pour starts." },
+      { term: "formwork",         pt: "fôrma",                     meaning: "Temporary mold (usually wood or steel) that holds wet concrete until it sets.", example: "Don't strip the formwork off the columns until the concrete cures." },
+      { term: "drywall",          pt: "drywall / gesso acartonado", meaning: "Lightweight panels of plaster used to build interior walls quickly.",         example: "We're putting up drywall today and skim-coating tomorrow." },
+      { term: "grout",            pt: "rejunte",                   meaning: "The filler paste applied between tiles after they're laid.",                  example: "Wait 24 hours before you grout — the tiles need to set." },
+      { term: "mortar",           pt: "argamassa",                 meaning: "The mix of cement, sand and water used to bond bricks or stones together.", example: "Mix a fresh batch of mortar — that one is too dry to work with." },
+      { term: "load-bearing wall", pt: "parede portante",          meaning: "A wall that carries the weight of the floors or roof above it.",              example: "You can't knock that down — it's a load-bearing wall." },
+      { term: "snag list",        pt: "lista de pendências",       meaning: "A list of small defects that need to be fixed before the project is handed over.", example: "The client added six items to the snag list yesterday." },
+      { term: "punch list",       pt: "lista de pendências (US)",  meaning: "American English for snag list — final defects to fix before handover.",     example: "We're 95% done — just the punch list to clear." },
+      { term: "subcontractor",    pt: "subempreiteiro",            meaning: "A specialized company hired by the main contractor for one part of the job.", example: "The electrical subcontractor is two days behind schedule." },
+      { term: "foreman",          pt: "mestre de obras",           meaning: "The person in charge of the workers on the site day-to-day.",                example: "Talk to the foreman — he decides who works on which floor." },
+      { term: "backfill",         pt: "reaterro",                  meaning: "To fill an excavated area back in with soil or gravel after work is done.",  example: "Once the foundation is cured, we'll backfill around it." },
+      { term: "demo",             pt: "demolição",                 meaning: "Short for 'demolition' — tearing something down to make space for new work.", example: "Demo starts Monday — the old kitchen has to come out." },
+      { term: "jobsite",          pt: "canteiro de obra (US)",     meaning: "The general area where construction is happening — everyday US site talk.",  example: "Coffee at six, on the jobsite by seven." },
+      { term: "skim coat",        pt: "massa fina",                meaning: "A thin final layer of plaster applied to smooth a wall before painting.",     example: "Give it a skim coat before you start painting." },
+      { term: "caulk",            pt: "silicone (selante)",        meaning: "A flexible filler used to seal joints between materials.",                    example: "Run a bead of caulk along the bathtub edge." }
+    ]
+  },
+  c1: {
+    blurb: "<strong>Engineering &amp; project-management vocab.</strong> The words you'll see on contracts, drawings and RFIs — and hear in coordination meetings.",
+    terms: [
+      { term: "load-bearing capacity", pt: "capacidade de carga",          meaning: "The maximum weight a structural element can safely support.",                example: "The engineer calculated the load-bearing capacity of the new mezzanine." },
+      { term: "structural integrity",  pt: "integridade estrutural",       meaning: "The state of a building's structure being safe, sound and stable.",         example: "After the earthquake, inspectors checked the structural integrity." },
+      { term: "bill of quantities",    pt: "planilha quantitativa",        meaning: "A detailed list of every material and quantity required for a project.",     example: "The contractor needs the bill of quantities before pricing the job." },
+      { term: "cantilever",            pt: "balanço (estrutural)",         meaning: "A horizontal structural element supported only at one end.",                  example: "The balcony is a cantilever extending 2.5 meters from the wall." },
+      { term: "retaining wall",        pt: "muro de arrimo",               meaning: "A wall built to hold back soil and prevent landslides.",                       example: "They built a retaining wall along the access road." },
+      { term: "expansion joint",       pt: "junta de dilatação",           meaning: "An intentional gap that allows materials to expand and contract.",            example: "Long concrete slabs need expansion joints every few meters." },
+      { term: "waterproofing",         pt: "impermeabilização",            meaning: "The process of making a structure resistant to water penetration.",            example: "Waterproofing the basement walls comes before backfill." },
+      { term: "as-built drawings",     pt: "projeto as-built / executado", meaning: "Updated drawings showing exactly how the building was constructed.",          example: "Submit the as-built drawings before final payment." },
+      { term: "RFI",                   pt: "pedido de esclarecimento",     meaning: "Request for Information — a formal written question to the design team.",     example: "I sent an RFI about the column reinforcement detail." },
+      { term: "dead load",             pt: "carga permanente",             meaning: "The permanent weight of a building's own structure.",                          example: "The dead load includes walls, slabs and roof." },
+      { term: "live load",             pt: "carga acidental / variável",   meaning: "The variable weight of people, furniture and equipment in a building.",       example: "Office buildings need higher live loads than houses." },
+      { term: "shoring",               pt: "escoramento",                  meaning: "Temporary structural support used during excavation or repair.",              example: "Install the shoring before you remove the existing column." },
+      { term: "critical path",         pt: "caminho crítico",              meaning: "The sequence of tasks that determines the shortest project duration.",        example: "Any delay on the critical path delays the whole project." },
+      { term: "change order",          pt: "ordem de modificação",         meaning: "A formal contract amendment for changes in scope or design.",                example: "The owner issued a change order for the new bathroom." },
+      { term: "soil bearing capacity", pt: "capacidade de suporte do solo", meaning: "The maximum load the soil can safely support without failing.",              example: "Geotechnical tests confirmed the soil bearing capacity." }
+    ]
+  },
+  c2: {
+    blurb: "<strong>High-level construction &amp; contract vocabulary.</strong> The English of executive meetings, tenders and international projects.",
+    terms: [
+      { term: "value engineering",      pt: "engenharia de valor",                 meaning: "Reviewing alternative materials/methods to deliver the same function at lower cost without sacrificing quality.", example: "Value engineering reduced the budget by 8% without affecting quality." },
+      { term: "constructability",       pt: "construtibilidade",                   meaning: "How easily and efficiently a design can actually be built on site.",                                                example: "The team flagged constructability issues with the curved façade." },
+      { term: "lean construction",      pt: "construção enxuta",                   meaning: "A construction philosophy focused on eliminating waste and maximizing value, adapted from Toyota's system.",        example: "Lean construction has cut our delivery time by 20%." },
+      { term: "contingency allowance",  pt: "reserva para contingências",          meaning: "An amount added to the budget to cover unexpected costs or risks.",                                                  example: "The contract includes a 10% contingency allowance." },
+      { term: "liquidated damages",     pt: "multa contratual por atraso",         meaning: "Pre-agreed financial penalties paid by the contractor for late delivery.",                                            example: "Each day of delay triggers liquidated damages of $5,000." },
+      { term: "specifications",         pt: "especificações técnicas",             meaning: "Detailed contract documents describing materials and workmanship standards.",                                         example: "The specifications require structural-grade steel only." },
+      { term: "force majeure",          pt: "força maior",                         meaning: "A contractual clause excusing performance due to extraordinary, uncontrollable events.",                              example: "The flood triggered the force majeure clause in the contract." },
+      { term: "MEP",                    pt: "instalações prediais",                meaning: "Mechanical, Electrical and Plumbing systems collectively.",                                                            example: "MEP coordination starts after structural drawings are signed off." },
+      { term: "building envelope",      pt: "envoltória do edifício",              meaning: "Everything that physically separates the conditioned interior from the exterior.",                                    example: "A high-performance building envelope cuts energy costs in half." },
+      { term: "commissioning",          pt: "comissionamento",                     meaning: "The process of testing and verifying all building systems before handover to the owner.",                              example: "Commissioning of the HVAC system starts next week." },
+      { term: "defects liability period", pt: "período de garantia",                meaning: "The time after handover during which the contractor must fix any defects that appear.",                              example: "The defects liability period is 12 months from handover." },
+      { term: "notice to proceed",      pt: "ordem de início de obra",             meaning: "The owner's formal written authorization to begin work, often abbreviated NTP.",                                       example: "We can't mobilize until the notice to proceed is issued." },
+      { term: "prequalification",       pt: "pré-qualificação",                    meaning: "The vetting stage where contractors must demonstrate capability before being allowed to bid.",                          example: "Only three contractors passed prequalification for this tender." },
+      { term: "punchlist walkthrough",  pt: "vistoria de pendências",              meaning: "The final inspection where the owner walks the project and lists every remaining defect.",                            example: "The punchlist walkthrough is scheduled for Friday." },
+      { term: "critical path method",   pt: "método do caminho crítico",           meaning: "A scheduling technique that identifies the longest sequence of dependent tasks (CPM).",                                example: "The critical path method shows we can finish two weeks early." }
+    ]
+  }
+};
+
+const LEVEL_LABELS = { a1: "A1", a2: "A2", b1: "B1", b2: "B2", c1: "C1", c2: "C2" };
+
+/* ===================== STATE ===================== */
+let currentLevel = 'a1';
+let currentMode  = 'study';
+let matchMode    = 'pt';   // 'pt' or 'def'
+
+/* per-level state, lazily initialized */
+const state = {};
+function ensureState(level) {
+  if (state[level]) return state[level];
+  state[level] = {
+    study: { order: [], idx: 0, correct: 0, wrong: 0, evaluated: new Set() },
+    match: { selected: null, matched: 0, mistakes: 0 },
+    quiz:  { questions: [], idx: 0, answered: {}, correct: 0, wrong: 0 }
+  };
+  return state[level];
+}
+
+/* ===================== UTIL ===================== */
+function shuffle(a) {
+  const arr = [...a];
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+
+/* ===================== LEVEL / MODE SWITCH ===================== */
+function switchLevel(level, btn) {
+  currentLevel = level;
+  document.querySelectorAll('.level-tabs .tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  renderAll();
+}
+
+function switchMode(mode, btn) {
+  currentMode = mode;
+  document.querySelectorAll('.mode-tabs .tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.mode-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('panel-' + mode).classList.add('active');
+  renderAll();
+}
+
+function renderAll() {
+  const d = DATA[currentLevel];
+  document.getElementById('level-intro').innerHTML =
+    '<span class="level-tag">' + LEVEL_LABELS[currentLevel] + ' · 15 terms</span>' + d.blurb;
+  renderScoreboard();
+  if (currentMode === 'study') { initStudy(); }
+  if (currentMode === 'match') { initMatch(); }
+  if (currentMode === 'quiz')  { initQuiz();  }
+}
+
+/* ===================== SCOREBOARD ===================== */
+function renderScoreboard() {
+  const sb = document.getElementById('scoreboard');
+  const s = ensureState(currentLevel);
+  let html = '';
+  if (currentMode === 'study') {
+    const total = s.study.correct + s.study.wrong;
+    const pct = total ? Math.round(s.study.correct / total * 100) + '%' : '—';
+    html = '<div class="score-card correct"><div class="label">Got it Right</div><div class="value">' + s.study.correct + '</div></div>' +
+           '<div class="score-card wrong"><div class="label">Got it Wrong</div><div class="value">' + s.study.wrong + '</div></div>' +
+           '<div class="score-card percent"><div class="label">Accuracy</div><div class="value">' + pct + '</div></div>' +
+           '<div style="display:flex;align-items:center;"><button class="reset-btn" onclick="resetStudyScore()">↻ Reset</button></div>';
+  } else if (currentMode === 'match') {
+    html = '<div class="score-card correct"><div class="label">Matched</div><div class="value">' + s.match.matched + '</div></div>' +
+           '<div class="score-card wrong"><div class="label">Mistakes</div><div class="value">' + s.match.mistakes + '</div></div>' +
+           '<div class="score-card percent"><div class="label">Total</div><div class="value">15</div></div>' +
+           '<div style="display:flex;align-items:center;"><button class="reset-btn" onclick="initMatch()">↻ New Round</button></div>';
+  } else {
+    const total = s.quiz.correct + s.quiz.wrong;
+    const pct = total ? Math.round(s.quiz.correct / total * 100) + '%' : '—';
+    html = '<div class="score-card correct"><div class="label">Correct</div><div class="value">' + s.quiz.correct + '</div></div>' +
+           '<div class="score-card wrong"><div class="label">Wrong</div><div class="value">' + s.quiz.wrong + '</div></div>' +
+           '<div class="score-card percent"><div class="label">Accuracy</div><div class="value">' + pct + '</div></div>' +
+           '<div style="display:flex;align-items:center;"><button class="reset-btn" onclick="shuffleQuiz()">↻ New Quiz</button></div>';
+  }
+  sb.innerHTML = html;
+}
+
+/* ===================== STUDY (FLASHCARDS) ===================== */
+function initStudy() {
+  const s = ensureState(currentLevel);
+  const data = DATA[currentLevel].terms;
+  if (!s.study.order.length) {
+    s.study.order = data.map((_, i) => i);
+    s.study.idx = 0;
+    s.study.evaluated = new Set();
+  }
+  renderStudy();
+}
+
+function renderStudy() {
+  const s = ensureState(currentLevel);
+  const data = DATA[currentLevel].terms;
+  const card = data[s.study.order[s.study.idx]];
+  document.getElementById('study-term').textContent = card.term;
+  document.getElementById('study-pt').textContent = '— ' + card.pt;
+  document.getElementById('study-meaning').textContent = card.meaning;
+  document.getElementById('study-example').textContent = '"' + card.example + '"';
+  document.getElementById('study-card').classList.remove('flipped');
+  document.getElementById('study-counter').textContent = 'Card ' + (s.study.idx + 1) + ' of ' + data.length;
+  document.getElementById('study-progress').style.width = ((s.study.idx + 1) / data.length * 100) + '%';
+  const evaluated = s.study.evaluated.has(s.study.order[s.study.idx]);
+  document.getElementById('study-correct').disabled = evaluated;
+  document.getElementById('study-wrong').disabled   = evaluated;
+}
+
+function flipStudy() {
+  document.getElementById('study-card').classList.toggle('flipped');
+}
+
+function nextStudy() {
+  const s = ensureState(currentLevel);
+  if (s.study.idx < DATA[currentLevel].terms.length - 1) { s.study.idx++; renderStudy(); }
+}
+function prevStudy() {
+  const s = ensureState(currentLevel);
+  if (s.study.idx > 0) { s.study.idx--; renderStudy(); }
+}
+function shuffleStudy() {
+  const s = ensureState(currentLevel);
+  s.study.order = shuffle(s.study.order);
+  s.study.idx = 0;
+  renderStudy();
+}
+
+function markStudy(right) {
+  const s = ensureState(currentLevel);
+  const cardIdx = s.study.order[s.study.idx];
+  if (s.study.evaluated.has(cardIdx)) return;
+  s.study.evaluated.add(cardIdx);
+  if (right) s.study.correct++; else s.study.wrong++;
+  renderScoreboard();
+  setTimeout(() => { if (s.study.idx < DATA[currentLevel].terms.length - 1) nextStudy(); else renderStudy(); }, 250);
+}
+
+function resetStudyScore() {
+  const s = ensureState(currentLevel);
+  s.study.correct = 0; s.study.wrong = 0; s.study.evaluated = new Set();
+  renderScoreboard(); renderStudy();
+}
+
+/* ===================== MATCHING ===================== */
+function setMatchMode(mode) {
+  matchMode = mode;
+  document.getElementById('match-mode-pt').classList.toggle('active', mode === 'pt');
+  document.getElementById('match-mode-def').classList.toggle('active', mode === 'def');
+  document.getElementById('match-right-title').textContent = mode === 'pt' ? 'Português' : 'Definition';
+  initMatch();
+}
+
+function initMatch() {
+  const s = ensureState(currentLevel);
+  s.match = { selected: null, matched: 0, mistakes: 0 };
+  const data = DATA[currentLevel].terms;
+  const left = document.getElementById('match-left');
+  const right = document.getElementById('match-right');
+  left.innerHTML = ''; right.innerHTML = '';
+  document.getElementById('match-victory').classList.remove('show');
+
+  const leftOrder  = shuffle(data.map((_, i) => i));
+  const rightOrder = shuffle(data.map((_, i) => i));
+
+  leftOrder.forEach(i => {
+    const div = document.createElement('div');
+    div.className = 'match-item term';
+    div.textContent = data[i].term;
+    div.dataset.idx = i;
+    div.onclick = () => selectMatchLeft(div);
+    left.appendChild(div);
+  });
+
+  rightOrder.forEach(i => {
+    const div = document.createElement('div');
+    div.className = 'match-item';
+    div.textContent = matchMode === 'pt' ? data[i].pt : data[i].meaning;
+    div.dataset.idx = i;
+    div.onclick = () => selectMatchRight(div);
+    right.appendChild(div);
+  });
+
+  document.getElementById('match-total').textContent = data.length;
+  renderScoreboard();
+  document.getElementById('match-current').textContent = '0';
+}
+
+function selectMatchLeft(el) {
+  if (el.classList.contains('matched')) return;
+  const s = ensureState(currentLevel);
+  document.querySelectorAll('#match-left .match-item.selected').forEach(e => e.classList.remove('selected'));
+  el.classList.add('selected');
+  s.match.selected = el;
+}
+
+function selectMatchRight(el) {
+  if (el.classList.contains('matched')) return;
+  const s = ensureState(currentLevel);
+  if (!s.match.selected) return;
+  if (el.dataset.idx === s.match.selected.dataset.idx) {
+    el.classList.add('matched');
+    s.match.selected.classList.add('matched');
+    s.match.selected.classList.remove('selected');
+    s.match.selected = null;
+    s.match.matched++;
+    document.getElementById('match-current').textContent = s.match.matched;
+    renderScoreboard();
+    if (s.match.matched === DATA[currentLevel].terms.length) {
+      document.getElementById('match-victory').classList.add('show');
+    }
+  } else {
+    el.classList.add('wrong');
+    s.match.selected.classList.add('wrong');
+    s.match.mistakes++;
+    renderScoreboard();
+    const wrongRight = el;
+    const wrongLeft = s.match.selected;
+    setTimeout(() => {
+      wrongRight.classList.remove('wrong');
+      wrongLeft.classList.remove('wrong', 'selected');
+    }, 500);
+    s.match.selected = null;
+  }
+}
+
+/* ===================== QUIZ ===================== */
+function buildQuiz(level) {
+  const data = DATA[level].terms;
+  return shuffle(data.map((_, i) => i)).map(i => {
+    const correct = data[i];
+    const distractorPool = data.map((_, k) => k).filter(k => k !== i);
+    const distractorIdxs = shuffle(distractorPool).slice(0, 3);
+    const options = shuffle([i, ...distractorIdxs]);
+    return {
+      correctIdx: i,
+      meaning: correct.meaning,
+      example: correct.example,
+      pt: correct.pt,
+      term: correct.term,
+      options: options.map(k => ({ idx: k, term: data[k].term }))
+    };
+  });
+}
+
+function initQuiz() {
+  const s = ensureState(currentLevel);
+  if (!s.quiz.questions.length) {
+    s.quiz.questions = buildQuiz(currentLevel);
+    s.quiz.idx = 0;
+    s.quiz.answered = {};
+    s.quiz.correct = 0;
+    s.quiz.wrong = 0;
+  }
+  renderQuiz();
+}
+
+function renderQuiz() {
+  const s = ensureState(currentLevel);
+  const q = s.quiz.questions[s.quiz.idx];
+  document.getElementById('quiz-progress').textContent =
+    'Question ' + (s.quiz.idx + 1) + ' of ' + s.quiz.questions.length;
+  const container = document.getElementById('quiz-card-container');
+  const answered = s.quiz.answered[s.quiz.idx];
+
+  let html = '<div class="quiz-card">';
+  html += '<div class="quiz-num">Question ' + (s.quiz.idx + 1) + '</div>';
+  html += '<div class="quiz-prompt">Which English term matches this meaning?<span class="quiz-meaning">' + q.meaning + '</span></div>';
+  html += '<div class="quiz-options">';
+  q.options.forEach((opt, oi) => {
+    const letter = ['A','B','C','D'][oi];
+    let cls = 'quiz-option';
+    if (answered) {
+      cls += ' disabled';
+      if (opt.idx === q.correctIdx) cls += ' correct';
+      if (opt.idx === answered.picked && answered.picked !== q.correctIdx) cls += ' wrong';
+    }
+    const onclick = answered ? '' : 'onclick="answerQuiz(' + oi + ')"';
+    html += '<button class="' + cls + '" ' + onclick + '><span class="quiz-letter">' + letter + '</span>' + opt.term + '</button>';
+  });
+  html += '</div>';
+  if (answered) {
+    const isRight = answered.picked === q.correctIdx;
+    html += '<div class="quiz-feedback show">' +
+      (isRight ? '✓ Correct! ' : '✗ Not quite. The answer is ') +
+      '<strong>' + q.term + '</strong> — ' + q.pt + '. ' +
+      '<br><em style="color:var(--gray);font-style:italic;">"' + q.example + '"</em></div>';
+  }
+  html += '</div>';
+  container.innerHTML = html;
+
+  // victory if all answered
+  const allAnswered = Object.keys(s.quiz.answered).length === s.quiz.questions.length;
+  document.getElementById('quiz-victory').classList.toggle('show', allAnswered);
+  if (allAnswered) {
+    document.getElementById('quiz-victory-msg').textContent =
+      'You scored ' + s.quiz.correct + ' out of ' + s.quiz.questions.length + ' (' +
+      Math.round(s.quiz.correct / s.quiz.questions.length * 100) + '%).';
+  }
+}
+
+function answerQuiz(oi) {
+  const s = ensureState(currentLevel);
+  const q = s.quiz.questions[s.quiz.idx];
+  if (s.quiz.answered[s.quiz.idx]) return;
+  const picked = q.options[oi].idx;
+  s.quiz.answered[s.quiz.idx] = { picked: picked };
+  if (picked === q.correctIdx) s.quiz.correct++; else s.quiz.wrong++;
+  renderScoreboard();
+  renderQuiz();
+}
+
+function nextQuiz() {
+  const s = ensureState(currentLevel);
+  if (s.quiz.idx < s.quiz.questions.length - 1) { s.quiz.idx++; renderQuiz(); }
+}
+function prevQuiz() {
+  const s = ensureState(currentLevel);
+  if (s.quiz.idx > 0) { s.quiz.idx--; renderQuiz(); }
+}
+function shuffleQuiz() {
+  const s = ensureState(currentLevel);
+  s.quiz.questions = buildQuiz(currentLevel);
+  s.quiz.idx = 0;
+  s.quiz.answered = {};
+  s.quiz.correct = 0;
+  s.quiz.wrong = 0;
+  renderScoreboard();
+  renderQuiz();
+}
+
+/* ===================== INIT ===================== */
+renderAll();
+</script>
+</body>
+</html>

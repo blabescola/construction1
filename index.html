@@ -186,10 +186,10 @@
   .card-face { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 16px; padding: 30px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; }
   .card-front { background: linear-gradient(135deg, var(--purple-dark), var(--purple)); color: var(--white); box-shadow: 0 12px 40px var(--purple-glow); }
   .card-front .term { font-size: 2.4em; font-weight: 800; margin-bottom: 12px; letter-spacing: -1px; line-height: 1.1; }
-  .card-front .pt { font-size: 0.95em; opacity: 0.85; font-style: italic; }
   .card-front .hint { font-size: 0.78em; opacity: 0.7; font-style: italic; margin-top: 14px; }
   .card-back { background: var(--bg-elevated); border: 2px solid var(--purple); transform: rotateY(180deg); color: var(--white); }
   .card-back .label { font-size: 0.7em; text-transform: uppercase; letter-spacing: 2px; color: var(--purple-light); font-weight: 700; margin-bottom: 8px; }
+  .card-back .pt { font-size: 1.15em; font-weight: 700; color: var(--purple-light); margin-bottom: 16px; line-height: 1.3; }
   .card-back .meaning { font-size: 1.05em; font-weight: 600; line-height: 1.45; margin-bottom: 16px; max-width: 92%; }
   .card-back .example-label { font-size: 0.65em; text-transform: uppercase; letter-spacing: 2px; color: var(--gray); font-weight: 600; margin-bottom: 6px; }
   .card-back .example { font-size: 0.92em; font-style: italic; color: var(--gray); line-height: 1.5; max-width: 90%; }
@@ -367,8 +367,7 @@
         <div class="flashcard" id="study-card" onclick="flipStudy()">
           <div class="card-face card-front">
             <div class="term" id="study-term">—</div>
-            <div class="pt" id="study-pt"></div>
-            <div class="hint">Tap to reveal meaning &amp; example</div>
+            <div class="hint">Tap to reveal translation, meaning &amp; example</div>
           </div>
           <div class="card-face card-back">
             <div class="label">Meaning</div>
@@ -391,12 +390,8 @@
 
     <!-- ============ MATCH ============ -->
     <div class="mode-panel" id="panel-match">
-      <div class="match-mode-toggle">
-        <button id="match-mode-pt" class="active" onclick="setMatchMode('pt')">EN ↔ Português</button>
-        <button id="match-mode-def" onclick="setMatchMode('def')">EN ↔ Definition</button>
-      </div>
       <div class="matching-instructions">
-        Click an <strong>English term</strong> on the left, then click its <strong>match</strong> on the right.
+        Click an <strong>English term</strong> on the left, then click its <strong>definition</strong> on the right.
       </div>
       <div class="matching-header">
         <div class="round-score">Matched: <span id="match-current">0</span> / <span id="match-total">15</span></div>
@@ -404,7 +399,7 @@
       </div>
       <div class="matching-grid">
         <div><div class="column-title">English</div><div class="match-column" id="match-left"></div></div>
-        <div><div class="column-title" id="match-right-title">Português</div><div class="match-column" id="match-right"></div></div>
+        <div><div class="column-title" id="match-right-title">Definition</div><div class="match-column" id="match-right"></div></div>
       </div>
       <div class="victory" id="match-victory">
         <h2>You nailed it! 🔨</h2>
@@ -601,7 +596,6 @@ const LEVEL_LABELS = { a1: "A1", a2: "A2", b1: "B1", b2: "B2", c1: "C1", c2: "C2
 /* ===================== STATE ===================== */
 let currentLevel = 'a1';
 let currentMode  = 'study';
-let matchMode    = 'pt';   // 'pt' or 'def'
 
 /* per-level state, lazily initialized */
 const state = {};
@@ -614,6 +608,8 @@ function ensureState(level) {
   };
   return state[level];
 }
+
+/* matchMode kept fixed at 'def' since Portuguese mode was removed */
 
 /* ===================== UTIL ===================== */
 function shuffle(a) {
@@ -697,7 +693,6 @@ function renderStudy() {
   const data = DATA[currentLevel].terms;
   const card = data[s.study.order[s.study.idx]];
   document.getElementById('study-term').textContent = card.term;
-  document.getElementById('study-pt').textContent = '— ' + card.pt;
   document.getElementById('study-meaning').textContent = card.meaning;
   document.getElementById('study-example').textContent = '"' + card.example + '"';
   document.getElementById('study-card').classList.remove('flipped');
@@ -744,14 +739,6 @@ function resetStudyScore() {
 }
 
 /* ===================== MATCHING ===================== */
-function setMatchMode(mode) {
-  matchMode = mode;
-  document.getElementById('match-mode-pt').classList.toggle('active', mode === 'pt');
-  document.getElementById('match-mode-def').classList.toggle('active', mode === 'def');
-  document.getElementById('match-right-title').textContent = mode === 'pt' ? 'Português' : 'Definition';
-  initMatch();
-}
-
 function initMatch() {
   const s = ensureState(currentLevel);
   s.match = { selected: null, matched: 0, mistakes: 0 };
@@ -776,7 +763,7 @@ function initMatch() {
   rightOrder.forEach(i => {
     const div = document.createElement('div');
     div.className = 'match-item';
-    div.textContent = matchMode === 'pt' ? data[i].pt : data[i].meaning;
+    div.textContent = data[i].meaning;
     div.dataset.idx = i;
     div.onclick = () => selectMatchRight(div);
     right.appendChild(div);
@@ -884,7 +871,7 @@ function renderQuiz() {
     const isRight = answered.picked === q.correctIdx;
     html += '<div class="quiz-feedback show">' +
       (isRight ? '✓ Correct! ' : '✗ Not quite. The answer is ') +
-      '<strong>' + q.term + '</strong> — ' + q.pt + '. ' +
+      '<strong>' + q.term + '</strong>.' +
       '<br><em style="color:var(--gray);font-style:italic;">"' + q.example + '"</em></div>';
   }
   html += '</div>';
